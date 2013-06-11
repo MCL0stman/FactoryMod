@@ -157,20 +157,8 @@ public class ProductionManager implements Manager
 			long timeDisrepair  =  Long.parseLong(parts[17]);
 			if(FactoryModPlugin.productionProperties.containsKey(subFactoryType))
 			{
-				Set<ProductionRecipe> recipes=new HashSet<ProductionRecipe>();
 				
-				// TODO: Give default recipes for subfactory type
-				ProductionProperties properties = FactoryModPlugin.productionProperties.get(subFactoryType);
-				recipes.addAll(properties.getRecipes());
-				
-				for(String name:recipeNames)
-				{
-					if(FactoryModPlugin.productionRecipes.containsKey(name))
-					{
-						recipes.add(FactoryModPlugin.productionRecipes.get(name));
-					}
-				}
-
+				List<ProductionRecipe> recipes=new ArrayList<ProductionRecipe>(FactoryModPlugin.productionProperties.get(subFactoryType).getRecipes());
 				ProductionFactory production = new ProductionFactory(centerLocation, inventoryLocation, powerLocation, subFactoryType, active, productionTimer, energyTimer, new ArrayList<ProductionRecipe>(recipes), currentRecipeNumber, currentRepair,timeDisrepair);
 				addFactory(production);
 			}
