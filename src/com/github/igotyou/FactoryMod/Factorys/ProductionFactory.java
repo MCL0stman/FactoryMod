@@ -7,14 +7,20 @@ import com.github.igotyou.FactoryMod.interfaces.Recipe;
 import com.github.igotyou.FactoryMod.properties.ProductionProperties;
 import com.github.igotyou.FactoryMod.recipes.ProbabilisticEnchantment;
 import com.github.igotyou.FactoryMod.recipes.ProductionRecipe;
+import com.github.igotyou.FactoryMod.utility.AreaEffect;
 import com.github.igotyou.FactoryMod.utility.InteractionResponse;
 import com.github.igotyou.FactoryMod.utility.InteractionResponse.InteractionResult;
 import com.github.igotyou.FactoryMod.utility.ItemList;
 import com.github.igotyou.FactoryMod.utility.NamedItemStack;
+import static com.untamedears.citadel.Utility.getReinforcement;
+import static com.untamedears.citadel.Utility.isReinforced;
+import com.untamedears.citadel.entity.PlayerReinforcement;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.Player;
 
 public class ProductionFactory extends BaseFactory
 {
@@ -280,5 +286,29 @@ public class ProductionFactory extends BaseFactory
 	@Override
 	public int getMaxRepair() {
 		return productionFactoryProperties.getRepair();
+	}
+	
+	@Override
+	protected void updateAreaEffects() {
+		for(AreaEffect areaEffect:productionFactoryProperties.getAreaEffects()) {
+			//Replicates Mojang implementation of Beacons, unsure of the requirement of -2 and +2
+			int xMin = factoryLocation.getBlockX()-2;
+			int xMax = factoryLocation.getBlockX()+2;
+			int zMin = factoryLocation.getBlockZ()-2;
+			int zMax = factoryLocation.getBlockZ()+2;
+			for(int x=xMin;x<=xMax;x+=16) {
+				for(int z=zMin;z<=zMax;z+=16) {
+					for(Entity entity:factoryLocation.getWorld().getChunkAt(x, z).getEntities()) {
+						if(entity instanceof Player) {
+							if(xMin<entity.getLocation().getBlockX()&&xMax>entity.getLocation().getBlockX()&&zMin<entity.getLocation().getBlockZ()&&zMax>entity.getLocation().getBlockZ())
+								if((!FactoryModPlugin.CITADEL_ENABLED || FactoryModPlugin.CITADEL_ENABLED && !isReinforced(factoryLocation)) || 
+										(((PlayerReinforcement) getReinforcement(factoryLocation)).isAccessible((Player)entity))){
+									((Player)entity).addPotionEffect(areaEffect);
+								}
+						}
+					}
+				}
+			}
+		}
 	}
 }

@@ -239,6 +239,7 @@ public abstract class BaseFactory extends FactoryObject implements Factory {
 	 */
 	public void update() 
 	{
+		updateAreaEffects();
 		//if factory is turned on
 		if (active)
 		{
@@ -510,5 +511,8 @@ public abstract class BaseFactory extends FactoryObject implements Factory {
 	
 	public List<InteractionResponse> getCentralBlockResponse() {
 		return new ArrayList<InteractionResponse>();
+	}
+	protected void updateAreaEffects(){
+		
 	}
 }

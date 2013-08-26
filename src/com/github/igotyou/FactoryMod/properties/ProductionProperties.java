@@ -1,19 +1,20 @@
 package com.github.igotyou.FactoryMod.properties;
 
-import com.github.igotyou.FactoryMod.FactoryModPlugin;
 import java.util.List;
 
 import com.github.igotyou.FactoryMod.interfaces.Properties;
 import com.github.igotyou.FactoryMod.managers.ProductionManager;
 import com.github.igotyou.FactoryMod.recipes.ProductionRecipe;
+import com.github.igotyou.FactoryMod.utility.AreaEffect;
 import com.github.igotyou.FactoryMod.utility.ItemList;
 import com.github.igotyou.FactoryMod.utility.NamedItemStack;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
+import java.util.Set;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.potion.PotionEffect;
 
 
 public class ProductionProperties implements Properties
@@ -21,12 +22,13 @@ public class ProductionProperties implements Properties
 	private ItemList<NamedItemStack> inputs;
 	private List<ProductionRecipe> recipes;
 	private ItemList<NamedItemStack> fuel;
+	private Set<AreaEffect> areaEffects;
 	private int energyTime;
 	private String name;
 	private int repair;
 	
 	public ProductionProperties(ItemList<NamedItemStack> inputs, List<ProductionRecipe> recipes,
-			ItemList<NamedItemStack> fuel, int energyTime, String name,int repair)
+			ItemList<NamedItemStack> fuel, int energyTime, String name,int repair, Set<AreaEffect> areaEffects)
 	{
 		this.inputs = inputs;
 		this.recipes = recipes;
@@ -34,6 +36,7 @@ public class ProductionProperties implements Properties
 		this.energyTime = energyTime;
 		this.name = name;
 		this.repair=repair;
+		this.areaEffects=areaEffects;
 	}
 
 	public int getRepair()
@@ -64,6 +67,10 @@ public class ProductionProperties implements Properties
 	public String getName()
 	{
 		return name;
+	}
+	
+	public Set<AreaEffect> getAreaEffects() {
+		return areaEffects;
 	}
 	/*
 	 * Parse a ProductionProperties from a ConfigurationSection
@@ -103,6 +110,7 @@ public class ProductionProperties implements Properties
 		ProductionRecipe repairRecipe=new ProductionRecipe(title+"REPAIR","Repair Factory",1,repairs);
 		productionManager.addProductionRecipe(title+"REPAIR",repairRecipe);
 		factoryRecipes.add(repairRecipe);
-		return new ProductionProperties(inputs, factoryRecipes, fuel, fuelTime, factoryName, repair);
+		Set<AreaEffect> areaEffects = AreaEffect.areaEffectsFromConfig(factoryConfiguration.getConfigurationSection("area_effects"));
+		return new ProductionProperties(inputs, factoryRecipes, fuel, fuelTime, factoryName, repair, areaEffects);
 	}
 }

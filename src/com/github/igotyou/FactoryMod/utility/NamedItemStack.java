@@ -10,8 +10,11 @@
  */
 package com.github.igotyou.FactoryMod.utility;
 
+import java.util.Set;
 import org.bukkit.Material;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.potion.PotionEffect;
 
 /**
  *
@@ -43,5 +46,13 @@ public class NamedItemStack extends ItemStack{
 	public String getCommonName()
 	{
 		return commonName;
+	}
+	
+	/*
+	 * Imports a PotionEffect from a configuration section
+	 */
+	
+	public static Set<PotionEffect> potionEffectsFromConfig(ConfigurationSection configurationSection) {
+		return null;
 	}
 }
